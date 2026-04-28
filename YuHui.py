@@ -117,7 +117,22 @@ def _touch_reload_flag(source: str):
     st.session_state["_reload_source"] = source
 
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+def get_data_dir() -> Path:
+    """
+    自動尋找 data 資料夾。
+    可同時支援：
+    1. 獨立 App：YuHui.py 放在專案根目錄
+    2. 合併 App：YuHui.py 放在 pages/ 資料夾
+    """
+    current_file = Path(__file__).resolve()
+    for parent in [current_file.parent, current_file.parent.parent, current_file.parent.parent.parent]:
+        data_dir = parent / "data"
+        if data_dir.exists():
+            return data_dir
+    return current_file.parent / "data"
+
+
+DATA_DIR = get_data_dir()
 XLSX_PATH = DATA_DIR / "yuhui_data.xlsx"
 
 
@@ -926,7 +941,7 @@ if need_fetch:
             fetched = ensure_excel_from_onedrive(XLSX_PATH)
 
 if not XLSX_PATH.exists():
-    st.error("找不到 data/yuhui_data.xlsx。")
+    st.error(f"找不到 {XLSX_PATH}。請確認 yuhui_data.xlsx 已放在 data 資料夾。")
     st.stop()
 
 family_df, acct = load_data(XLSX_PATH)
