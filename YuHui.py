@@ -576,6 +576,7 @@ def make_10y_projection_chart(
     convergence: float = 0.50,
     min_rate: float = 0.03,
     max_rate: float = 0.15,
+    years: int = 10,
 ):
     """
     進階版 10年資產預測：
@@ -601,7 +602,7 @@ def make_10y_projection_chart(
     rows = []
     for name, r in scenarios.items():
         value = start_assets
-        for y in range(0, 11):
+        for y in range(0, years + 1):
             if y == 0:
                 value = start_assets
             else:
@@ -614,7 +615,7 @@ def make_10y_projection_chart(
         y="預測資產",
         color="情境",
         markers=True,
-        title="10年資產預測（有效報酬動態基準 + 長期收斂）",
+        title=f"{years}年資產預測（有效報酬動態基準 + 長期收斂）",
     )
     fig.update_layout(height=520, yaxis_title="資產金額", legend_title_text="")
     fig.update_yaxes(tickformat=",")
@@ -1045,7 +1046,14 @@ if view_mode == "圖表":
     else:
         st.info("無法產生『投資收益（年度 vs 累積）』圖表（請確認 Excel 有『賣出日期 / 已實現損益』）。")
 
-    st.subheader("10年資產預測")
+    st.subheader("資產預測")
+    projection_years = st.radio(
+        "預測年期",
+        [10, 20, 30, 40],
+        index=0,
+        horizontal=True,
+        format_func=lambda x: f"{x}年",
+    )
     default_monthly = 0
     monthly_add = st.number_input("每月新增投入金額（可自行調整）", min_value=0, value=default_monthly, step=1000)
 
@@ -1089,6 +1097,7 @@ if view_mode == "圖表":
         convergence=projection_convergence,
         min_rate=min_projection_rate_pct / 100,
         max_rate=max_projection_rate_pct / 100,
+        years=projection_years,
     )
     if proj_fig is not None:
         st.plotly_chart(proj_fig, use_container_width=True)
