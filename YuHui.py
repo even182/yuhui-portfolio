@@ -920,6 +920,28 @@ def make_yearly_return_combo(family_df: pd.DataFrame, mode: str = "已實現", a
     )
     return fig
 
+# 左側選單 / 外部連結
+with st.sidebar:
+    st.markdown("### 外部連結")
+    st.link_button(
+        "💰 Family 的投資儀表板",
+        "https://family-portfolio.streamlit.app/Family",
+        use_container_width=True,
+    )
+
+    st.link_button(
+        "💰 Richard 的投資儀表板",
+        "https://family-portfolio.streamlit.app/Richard",
+        use_container_width=True,
+    )
+    
+    st.link_button(
+        "🌍 全球市場總覽",
+        "https://ai-monitor-center-8erctuqrzujpfuqgacqx2u.streamlit.app/global_market",
+        use_container_width=True,
+    )
+
+st.sidebar.divider()
 
 view_mode = st.sidebar.radio("顯示內容", ["圖表", "交易明細"], index=0)
 
